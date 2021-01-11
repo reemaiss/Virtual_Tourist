@@ -32,8 +32,15 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="vWK-99-TNm" secondAttribute="bottom" id="vip-iS-jvu"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="OeX-a1-EkI"/>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="OeX-a1-EkI">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="6a5-cO-K8k">
+                            <connections>
+                                <action selector="editAction:" destination="BYZ-38-t0r" id="IuK-qf-Azu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="editItemBar" destination="6a5-cO-K8k" id="5pI-o2-373"/>
                         <outlet property="mapView" destination="vWK-99-TNm" id="nZ8-qg-8H1"/>
                         <segue destination="jLn-Di-TvD" kind="show" id="DYh-F0-zPb"/>
                     </connections>

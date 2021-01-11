@@ -12,9 +12,20 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
+    var window: UIWindow?
+    
+    let dataController = DataController(name: "VirtualTourist")
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        
+        dataController.load()
+        
+        let nav = window?.rootViewController as! UINavigationController
+        let mapVC = nav.topViewController as! MapViewController
+        mapVC.dataController = dataController
         return true
     }
 
@@ -41,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentContainer(name: "Virtual_Tourist_Rema")
+        let container = NSPersistentContainer(name: "VirtualTourist")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.

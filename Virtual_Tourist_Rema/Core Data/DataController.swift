@@ -11,7 +11,9 @@ import CoreData
 class DataController {
     
     let persistentContainer : NSPersistentContainer
+    
     let backgroundContext: NSManagedObjectContext!
+    
     var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
@@ -23,24 +25,55 @@ class DataController {
     
     func configureNewContext(){
         viewContext.automaticallyMergesChangesFromParent = true
-        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         backgroundContext.automaticallyMergesChangesFromParent = true
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
     
-    func autoSaveContext(interval: TimeInterval = 30){
-        
-    }
+//    func autoSaveContext(interval: TimeInterval = 30){
+//        guard interval > 0 else {
+//            print("cant")
+//            return
+//        }
+//
+//        if viewContext.hasChanges {
+//            try? viewContext.save()
+//        }
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + interval ){
+//            self.autoSaveContext(interval: interval)
+//        }
+//    }
     
     func load(completion: (() -> Void)? = nil ){
         persistentContainer.loadPersistentStores { ( sort, error ) in
             guard error == nil else {
                 fatalError(error!.localizedDescription)
             }
-            self.autoSaveContext()
+            self.autoSaveViewContext()
             self.configureNewContext()
             completion?()
         }
     }
     
+}
+
+
+extension DataController {
+    func autoSaveViewContext(interval:TimeInterval = 30) {
+        print("autosaving")
+        
+        guard interval > 0 else {
+            print("cannot set negative autosave interval")
+            return
+        }
+        
+        if viewContext.hasChanges {
+            try? viewContext.save()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
+            self.autoSaveViewContext(interval: interval)
+        }
+    }
 }

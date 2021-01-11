@@ -26,7 +26,7 @@ struct PhotoObj: Codable{
     var server: String
     var farm: Int64
     var title: String
-    var isPublic: Int64
+    var ispublic: Int64
     var isfriend: Int64
     var isfamily: Int64
 }
