@@ -63,7 +63,7 @@ class MapViewController: UIViewController {
                 ann.coordinate = coordinate
                 anns.append(ann)
             }
-            self.mapView.addAnnotation(anns as! MKAnnotation)
+            self.mapView.addAnnotations(anns)
             self.pins = pins
         }
     }
@@ -124,7 +124,10 @@ extension MapViewController : MKMapViewDelegate {
             mapView.removeAnnotation(view.annotation!)
             deletePin(pin: newPin.first!)
         }else{
-           // to navgitr
+            let locationPhoto = storyboard?.instantiateViewController(identifier: "PhotoViewController") as! PhotoViewController
+            locationPhoto.pin = newPin.first
+            locationPhoto.dataController = dataController
+            present(locationPhoto, animated: true, completion: nil)
         }
     }
 }

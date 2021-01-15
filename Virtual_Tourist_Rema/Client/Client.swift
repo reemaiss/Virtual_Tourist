@@ -50,6 +50,7 @@ class Client {
                 var potosUrl: [String] = []
                 let responseObject = try decoder.decode(ResponseType.self, from: data)
                 DispatchQueue.main.async {
+                    
                     completion(responseObject, nil)
                 }
             } catch {
@@ -71,16 +72,32 @@ class Client {
         return task
     }
     
-    class func getPhotosByLocationRequst(long: Double, lat: Double , completion: @escaping(Bool,[PhotoObj],Error?)->Void){
+    
+    
+    
+    class func getPhotosByLocationRequst(long: Double, lat: Double , completion: @escaping(Bool,[URL],Error?)->Void){
         var photos: [PhotoObj] = []
+        var photosUrls: [URL] = []
         taskForGETRequest(url: Endpoints.getPhotosByLocation(lat, long).url, responseType: locationPhotoResponse.self) { (response, error) in
             if let response = response {
-                completion(true,response.photos.photo,nil)
-                return photos = response.photos.photo
+                // 1:
+                for photo in response.photos.photo {
+                    let farm = photo.farm
+                    let server = photo.server
+                    let id = photo.id
+                    let secret = photo.secret
+                    let photoURL = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg"
+                    photosUrls.append(URL(string: photoURL)!)
+//                    saveNewPhoto(urlString: photoURL)
+                }
+                completion(true,photosUrls,nil)
+//                return photos = response.photos.photo
             } else {
-                completion(false,response?.photos.photo ?? [] ,error)
+                completion(false,photosUrls ?? [] ,error)
             }
         }
     }
+    
+    
     
 }
