@@ -15,12 +15,15 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     func setImage(photo: Photo){
         
         if let ph = photo.data {
-            photoCell.image = UIImage(data: ph)
-            load.isHidden = true
-            load.stopAnimating()
+            DispatchQueue.main.async() {
+                self.photoCell.image = UIImage(data: ph)
+                self.load.stopAnimating()
+                self.load.isHidden = true
+                
+            }
         }else{
-            load.isHidden = true
-            load.stopAnimating()
+//            load.isHidden = true
+//            load.stopAnimating()
         }
     }
     

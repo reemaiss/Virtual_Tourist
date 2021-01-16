@@ -18,10 +18,12 @@ class PhotoViewController: UIViewController {
     var pin: Pin!
     var dataController: DataController!
     var photos: [Photo]?
+    var photosURL: [URL]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         acitivityIndicator.isHidden = true
+        colloctionView.reloadData()
         fetchData()
         setPhotos()
         // Do any additional setup after loading the view.
@@ -62,6 +64,7 @@ class PhotoViewController: UIViewController {
     
     func completionHandeler(success: Bool, response: [URL], error: Error?){
         if success {
+            self.colloctionView.reloadData()
             saveNewPhoto(urls: response)
             self.colloctionView.reloadData()
         } else {
@@ -77,6 +80,8 @@ class PhotoViewController: UIViewController {
     }
     
     func saveNewPhoto(urls: [URL])->Void{
+        self.photosURL = urls
+//        colloctionView.reloadData()
         for url in urls {
             let data = try? Data(contentsOf: url)
             let photo = Photo(context: dataController.viewContext)
@@ -92,6 +97,28 @@ class PhotoViewController: UIViewController {
         }
         try? dataController.viewContext.save()
         colloctionView.reloadData()
+    }
+    
+    
+    
+    func saveNewPhotoSingle(url: URL)->Photo{
+        
+            let data = try? Data(contentsOf: url)
+            let photo = Photo(context: dataController.viewContext)
+            photo.creationData = Date()
+            photo.data = data
+            photo.url = "\(url)"
+            photo.pin = pin
+            if photos != nil {
+                photos?.append(photo)
+            } else {
+                photos = [photo]
+            }
+
+        try? dataController.viewContext.save()
+        colloctionView.reloadData()
+
+        return photo
     }
     
     
@@ -130,12 +157,22 @@ extension PhotoViewController: UICollectionViewDelegate , UICollectionViewDataSo
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
         cell.load.isHidden = false
         cell.load.startAnimating()
+        
+        
         if let photos = self.photos {
             let photo = photos[(indexPath as NSIndexPath
             ).row]
             cell.setImage(photo: photo)
         }
+//        if let r = self.photosURL?[indexPath.row] {
+//            cell.photoCell.image = UIImage(data: try! Data(contentsOf: r))
+//            saveNewPhotoSingle(url: r)
+////            let d = saveNewPhotoSingle(url: r)
+////            cell.setImage(photo:d)
+//        }
         
+//        cell.load.isHidden = true
+//        cell.load.stopAnimating()
         return cell
     }
     
